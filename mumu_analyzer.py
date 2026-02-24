@@ -1,23 +1,36 @@
 from ultralytics import YOLO
 import cv2
 import numpy as np
-import time  # 1. 시간 측정을 위한 라이브러리 추가
+import time  # 시간 측정을 위한 라이브러리 추가
+import os # 폴더 생성을 위한 라이브러리 추가
 
 # 1. 모델 로드
 model = YOLO("yolov10n.pt")
-video_path = "Dog28sVideo.mp4"
+video_path = "DogAndCat16sVideo.mp4"
 cap = cv2.VideoCapture(video_path)
 
-# 영상 저장 설정
+# --- 결과물 저장 경로 및 폴더 설정 (이 위치가 가장 좋습니다) ---
+video_name = os.path.basename(video_path).split('.')[0] # 파일명만 추출 (예: Dog28sVideo)
+
+# 1. results 폴더가 없으면 새로 만들기
+result_dir = "results"
+if not os.path.exists(result_dir):
+    os.makedirs(result_dir)
+
+# 2. 결과 파일 경로 설정 (폴더명/영상이름_result.mp4)
+output_path = os.path.join(result_dir, f"{video_name}_result.mp4")
+
+# 영상 저장 설정 (VideoWriter 설정 변경 포함)
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-out = cv2.VideoWriter('mumu_anomaly_result.mp4', fourcc, 30.0,
-                      (int(cap.get(3)), int(cap.get(4))))
+out = cv2.VideoWriter(output_path, fourcc, 30.0,
+                         (int(cap.get(3)), int(cap.get(4))))
 
 prev_center = None
 
 # --- 분석 시작 시간 기록 ---
 start_time = time.time()
-print("Mumu가 이상행동 분석을 시작합니다")
+# f-string을 추가하여 실제 경로가 출력되도록 수정했습니다.
+print(f"Mumu가 이상행동 분석을 시작합니다. 결과는 {output_path}에 저장됩니다.")
 
 while cap.isOpened():
     success, frame = cap.read()
@@ -39,7 +52,7 @@ while cap.isOpened():
                     distance = np.linalg.norm(current_center - prev_center)
 
                     # 이상행동 감지 조건 (움직임이 너무 클 때)
-                    if distance > 80:  # 8초 영상에 맞춰 약간 하향 조정
+                    if distance > 80:  # 8초 영상에 맞춰 약간 하향 조정. ANOMALY가 과할 경우 값을 높힐 것.
                         cv2.putText(annotated_frame, "WARNING: ABNORMAL MOVEMENT!", (50, 100),
                                     cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 255), 3)
 
@@ -56,5 +69,5 @@ end_time = time.time()
 total_duration = end_time - start_time # 종료 시간 - 시작 시간
 
 print(f"✅ 분석 완료! 총 소요 시간: {total_duration:.2f}초")
-print("분석 완료 'mumu_anomaly_result.mp4' 파일을 확인하세요.")
-
+# 실제 저장된 경로를 알려주도록 수정
+print(f"분석 완료 '{output_path}' 파일을 확인하세요.")
