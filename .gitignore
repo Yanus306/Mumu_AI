@@ -10,3 +10,6 @@ runs/
 *.mp4
 *.avi
 mumu_env/
+
+# 분석 결과 폴더 전체 제외
+results/
