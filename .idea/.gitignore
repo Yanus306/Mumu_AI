@@ -1,0 +1,12 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+
+.idea/
+*.pt
+runs/
+*.mp4
+*.avi
+mumu_env/
