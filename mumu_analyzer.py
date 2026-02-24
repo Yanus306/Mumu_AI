@@ -4,12 +4,12 @@ import numpy as np
 import time  # 시간 측정을 위한 라이브러리 추가
 import os # 폴더 생성을 위한 라이브러리 추가
 
-# 1. 모델 로드
+# 모델 로드
 model = YOLO("yolov10n.pt")
 video_path = "DogAndCat16sVideo.mp4"
 cap = cv2.VideoCapture(video_path)
 
-# --- 결과물 저장 경로 및 폴더 설정 (이 위치가 가장 좋습니다) ---
+# --- 결과물 저장 경로 및 폴더 설정 ---
 video_name = os.path.basename(video_path).split('.')[0] # 파일명만 추출 (예: Dog28sVideo)
 
 # 1. results 폴더가 없으면 새로 만들기
@@ -29,7 +29,7 @@ prev_center = None
 
 # --- 분석 시작 시간 기록 ---
 start_time = time.time()
-# f-string을 추가하여 실제 경로가 출력되도록 수정했습니다.
+# f-string을 추가하여 실제 경로가 출력되도록 수정.
 print(f"Mumu가 이상행동 분석을 시작합니다. 결과는 {output_path}에 저장됩니다.")
 
 while cap.isOpened():
@@ -68,6 +68,4 @@ out.release()
 end_time = time.time()
 total_duration = end_time - start_time # 종료 시간 - 시작 시간
 
-print(f"✅ 분석 완료! 총 소요 시간: {total_duration:.2f}초")
-# 실제 저장된 경로를 알려주도록 수정
-print(f"분석 완료 '{output_path}' 파일을 확인하세요.")
+print(f"✅ 분석 완료! '{output_path}' 파일을 확인하세요.총 소요 시간: {total_duration:.2f}초")
